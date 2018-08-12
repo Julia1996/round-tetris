@@ -12,7 +12,7 @@ export default class Figure {
     this._placeToAppear = utils.getRandomElem(APPEARANCE_VARIANTS);
     this._shape = utils.getRandomElem(SHAPE);
 
-    this._timerId = setInterval(() => {})
+    this._timerId = setInterval(() => {});
   }
 
   onReachCenter() {}
@@ -54,7 +54,7 @@ export default class Figure {
       default:
         throw new Error(`Unknown shape ${this._shape}`);
     }
-    this._currentVariant = utils.getRandomElem([1, 2, 3, 4]);
+    this._currentVariant = utils.getRandomElem([0, 1, 2, 3]);
     this._coordinates = [...this._coordinatesVariants[this._currentVariant]];
 
     switch (this._placeToAppear) {
