@@ -89,7 +89,13 @@ export default class GameScreen {
     this._earth.height = this._earthSize * this._squareSize;
     this._earth.src = '../img/earth.png';
     this._earth.onload = () => {
-      this._context.drawImage(this._earth, earthCoords.xStart * this._squareSize, earthCoords.yStart * this._squareSize);
+      this._context.beginPath();
+      this._context.lineWidth="3";
+      this._context.strokeStyle="orange";
+      
+      this._context.rect(earthCoords.xStart * this._squareSize, earthCoords.yStart * this._squareSize, 160, 160);
+      this._context.stroke();
+      this._context.drawImage(this._earth, earthCoords.xStart * this._squareSize, earthCoords.yStart * this._squareSize, 160, 160);
     };
   }
 
