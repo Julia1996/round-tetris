@@ -1,11 +1,31 @@
+import SpaceItem from './space-item';
+import { getRandom, getRandomElem } from './utils';
+
+
 export default class GameScreen {
   constructor({ squaresQtyHorizontal, squaresQtyVertical, squareSize }) {
     this._canvas = document.createElement('canvas');
+    this._canvas2 = document.createElement('canvas');
+
     this._squareSize = squareSize;
-    this._canvas.width = squaresQtyHorizontal * this._squareSize;
-    this._canvas.height = squaresQtyVertical * this._squareSize;
+
+    this.height = squaresQtyVertical * this._squareSize;
+    this.width = squaresQtyHorizontal * this._squareSize; 
+
+    this._canvas.width = this.width;
+    this._canvas.height = this.height;
+
+    this._canvas2.width = this.width;
+    this._canvas2.height = this.height;
+
     this._context = this._canvas.getContext('2d');
+    this._context2 = this._canvas2.getContext('2d');
+
+    this._canvas.style.zIndex = 1;
+    this._canvas2.style.zIndex = 2;
+
     document.body.appendChild(this._canvas);
+    document.body.appendChild(this._canvas2);
 
     this._square = new Image();
     this._square.width = this._squareSize;
@@ -17,6 +37,24 @@ export default class GameScreen {
     for (let i = 0; i < squaresQtyHorizontal - 1; i++) {
       this._cellsEngaged.push([]);
     }
+    
+    const spaceItems = [];
+
+    spaceItems.push(new SpaceItem(this._context2, { width: this.width, height: this.height }));
+    
+    setInterval(() => {
+
+      spaceItems.push(new SpaceItem(this._context2, { width: this.width, height: this.height }));
+
+      spaceItems.forEach((item, index) => {
+        if (item.x <= 0 || item.x > window.innerWidth || item.y <= 0 || item.y > window.innerHeight) {
+          clearInterval(item.interval);
+          spaceItems.splice(index, 1);
+        }
+
+      });
+      
+    }, getRandom(3000, 5000));
   }
 
   fillSquare({ col, row }) {
