@@ -87,7 +87,14 @@ export default class GameScreen {
     this._earth = new Image();
     this._earth.width = this._earthSize * this._squareSize;
     this._earth.height = this._earthSize * this._squareSize;
-    this._earth.src = '../img/earth.png';
+    this._earth.src = getRandomElem([
+      '../img/earth.png',
+      'http://www.pngpix.com/wp-content/uploads/2016/10/PNGPIX-COM-Globe-Burning-PNG-Transparent-Image.png',
+      'https://png.icons8.com/color/1600/pluto-dwarf-planet.png',
+      'https://png.icons8.com/color/1600/saturn-planet.png',
+      'http://www.pngmart.com/files/4/Black-Hole-PNG-Photos.png'
+    ]);
+    
     this._earth.onload = () => {
       this._context.beginPath();
       this._context.lineWidth="3";
@@ -96,6 +103,8 @@ export default class GameScreen {
       this._context.rect(earthCoords.xStart * this._squareSize, earthCoords.yStart * this._squareSize, 160, 160);
       this._context.stroke();
       this._context.drawImage(this._earth, earthCoords.xStart * this._squareSize, earthCoords.yStart * this._squareSize, 160, 160);
+
+         
     };
   }
 
