@@ -29,6 +29,7 @@ export default class GameScreen {
   }
 
   cleanSquare({ col, row }) {
+    console.log('clean');
     this._context.clearRect(col * this._squareSize, row * this._squareSize, this._squareSize, this._squareSize);
     this._cellsEngaged[col][row] = false;
   }

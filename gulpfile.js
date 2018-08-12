@@ -63,7 +63,7 @@ gulp.task('scripts', function () {
       ]
     }, 'iife'))
     .pipe(uglify())
-    .pipe(sourcemaps.write(''))
+    .pipe(sourcemaps.write())
     .pipe(gulp.dest('build/js'));
 });
 

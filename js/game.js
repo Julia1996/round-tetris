@@ -74,5 +74,59 @@ export default class Game {
     };
   }
 
-  deleteFilledRows() {}
+  deleteFilledRows() {
+    let quantityOfRows = Math.max(this._earthCoordinates.xStart - 1, this._earthCoordinates.yStart - 1);
+    for (let k = 1; k < quantityOfRows; k++) {
+      let cleared;
+      do {
+        const points = {
+          xStart: this._earthCoordinates.xStart - k,
+          yStart: this._earthCoordinates.yStart - k,
+          xEnd: this._earthCoordinates.xEnd + k,
+          yEnd: this._earthCoordinates.yEnd + k
+        };
+        cleared = this._clearRowIfFilled(points);
+        if (cleared) {
+          this._fallToEmptyRow(points, quantityOfRows);
+        }
+      } while (cleared);
+    }
+  }
+
+  _clearRowIfFilled(points) {
+    for (let i = points.xStart; i < points.xEnd; i++) {
+      if (!this.screen.isSquareEngaged({ col: i, row: points.yStart })) return false;
+      if (!this.screen.isSquareEngaged({ col: i, row: points.yEnd - 1 })) return false;
+    }
+
+    for (let j = points.yStart + 1; j < points.yEnd - 1; j++) {
+      if (!this.screen.isSquareEngaged({ col: points.xStart, row: j })) return false;
+      if (!this.screen.isSquareEngaged({ col: points.xEnd - 1, row: j })) return false;
+    }
+
+    // we will rich this place if row filled, then clear it
+    for (let i = points.xStart; i < points.xEnd; i++) {
+      this.screen.cleanSquare({ col: i, row: points.yStart });
+      this.screen.cleanSquare({ col: i, row: points.yEnd - 1 });
+    }
+
+    for (let j = points.yStart + 1; j < points.yEnd - 1; j++) {
+      this.screen.cleanSquare({ col: points.xStart, row: j });
+      this.screen.cleanSquare({ col: points.xEnd - 1, row: j });
+    }
+    return true;
+  }
+
+  _fallToEmptyRow(points, quantityOfRows) {
+    for (let r = 0; r < quantityOfRows; r++) {
+      for (let i = points.xStart; i < points.xEnd; i++) {
+        // copy row above
+        if (this.screen.isSquareEngaged({col: i, row: points.yStart - (r + 1)})) {
+          this.screen.fillSquare({col: i, row: points.yStart - r});
+        }
+        // clean that row
+        this.screen.cleanSquare({col: i, row: points.yStart - (r + 1)});
+      }
+    }
+  }
 }
