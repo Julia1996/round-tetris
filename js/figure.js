@@ -39,7 +39,7 @@ export default class Figure {
         this._coordinatesVariants = [
           [{ x: 1, y: 0 }, { x: 0, y: 1 }, {x: 1, y: 1}, {x: 2, y: 1}],
           [{ x: 0, y: 0 }, { x: 0, y: 1 }, {x: 0, y: 2}, {x: 1, y: 1}],
-          [{ x: 0, y: 1 }, { x: 0, y: 0 }, {x: 1, y: 0}, {x: 2, y: 0}],
+          [{ x: 1, y: 1 }, { x: 0, y: 0 }, {x: 1, y: 0}, {x: 2, y: 0}],
           [{ x: 1, y: 0 }, { x: 1, y: 1 }, {x: 1, y: 2}, {x: 0, y: 1}]
         ];
         break;
@@ -55,7 +55,7 @@ export default class Figure {
         throw new Error(`Unknown shape ${this._shape}`);
     }
     this._currentVariant = utils.getRandomElem([0, 1, 2, 3]);
-    this._coordinates = [...this._coordinatesVariants[this._currentVariant]];
+    this._coordinates = this._coordinatesVariants[this._currentVariant].map(point => ({ x: point.x, y: point.y }));
 
     switch (this._placeToAppear) {
       case 'top':
@@ -107,23 +107,50 @@ export default class Figure {
       }
     });
 
-    const firureInsideScreen = newCoordinates.every(
-      point => point.x >= 0 && point.y >= 0 && point.x < this._squaresQtyHorizontal && point.y < this._squaresQtyVertical
-    );
-    if (!firureInsideScreen) return;
-
-    this._coordinates.forEach(point => this._screen.cleanSquare({ col: point.x, row: point.y }));
-    const landOn = newCoordinates.some(
-      point => this._screen.isSquareEngaged({ col: point.x, row: point.y }) || this._screen.clashWithEarth({ col: point.x, row: point.y })
-    );
-    if (landOn) {
-      this._coordinates.forEach(point => this._screen.fillSquare({ col: point.x, row: point.y }));
+    const result = this._checkNewCoordinates(this._coordinates, newCoordinates);
+    if (!result.figureInsideScreen) return;
+    if (result.clash) {
       this.onReachCenter();
       return;
     }
+    this._updateFigure(newCoordinates);
+  }
 
+  rotate() {
+    console.log(this._coordinatesVariants);
+    let newVariant = this._currentVariant + 1;
+    if (newVariant >= 4) newVariant = 0;
+
+    const newCoordinates = this._coordinates.map((point, i) => ({
+      x: point.x - this._coordinatesVariants[this._currentVariant][i].x + this._coordinatesVariants[newVariant][i].x,
+      y: point.y - this._coordinatesVariants[this._currentVariant][i].y + this._coordinatesVariants[newVariant][i].y
+    }));
+
+    const result = this._checkNewCoordinates(this._coordinates, newCoordinates);
+    if (!result.figureInsideScreen || result.clash) return;
+
+    this._currentVariant = newVariant;
+    this._updateFigure(newCoordinates);
+  }
+
+  _checkNewCoordinates(oldCoords, newCoordinates) {
+    const figureInsideScreen = newCoordinates.every(
+      point => point.x >= 0 && point.y >= 0 && point.x < this._squaresQtyHorizontal && point.y < this._squaresQtyVertical
+    );
+    if (!figureInsideScreen) return { figureInsideScreen };
+
+    oldCoords.forEach(point => this._screen.cleanSquare({ col: point.x, row: point.y }));
+    const clash = newCoordinates.some(
+      point => this._screen.isSquareEngaged({ col: point.x, row: point.y }) || this._screen.clashWithEarth({ col: point.x, row: point.y })
+    );
+    if (clash) {
+      oldCoords.forEach(point => this._screen.fillSquare({ col: point.x, row: point.y }));
+    }
+    return { clash, figureInsideScreen };
+  }
+
+  _updateFigure(newCoordinates) {
     this._coordinates = newCoordinates;
     this._coordinates.forEach(point => this._screen.fillSquare({ col: point.x, row: point.y }));
-
   }
 }

@@ -6,6 +6,7 @@ const SQUARE_SIZE = 20,
   TOP_KEY_CODE = 38,
   RIGTH_KEY_CODE = 39,
   BOTTOM_KEY_CODE = 40,
+  SPACE_KEY_CODE = 32,
   EARTH_SIZE = 8;
 
 export default class Game {
@@ -34,7 +35,7 @@ export default class Game {
 
     this.screen.drowEarth(this._earthCoordinates, EARTH_SIZE);
 
-    document.addEventListener('keyup', event => {
+    document.addEventListener('keydown', event => {
       switch (event.keyCode) {
         case LEFT_KEY_CODE:
           this.figure.move('left');
@@ -47,6 +48,9 @@ export default class Game {
           break;
         case BOTTOM_KEY_CODE:
           this.figure.move('bottom');
+          break;
+        case SPACE_KEY_CODE:
+          this.figure.rotate();
           break;
       }
     });
