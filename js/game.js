@@ -58,7 +58,9 @@ export default class Game {
       }
     });
 
-    this.addFigure();
+    setTimeout(() => {
+      this.addFigure();
+    }, 2000);
   }
 
   addFigure() {
@@ -69,6 +71,10 @@ export default class Game {
       squaresQtyHorizontal: this._squaresQtyHorizontal,
       squaresQtyVertical: this._squaresQtyVertical
     });
+
+    this.figuresCount += 1;
+    this.screen.figuresCount(this.figuresCount);
+    
     this.figure.createCoordinates();
     this.figure.appendToGame();
     this.figure.onReachCenter = () => {

@@ -119,6 +119,15 @@ export default class GameScreen {
     }, 2000);
   }
 
+  figuresCount(count) {
+    this._context.font = "35px Comic Sans MS";
+    this._context.fillStyle = "orange";
+    this._context.textAlign = "center";
+
+    this._context.clearRect(window.innerWidth - 200, 0, 300, 300);
+    this._context.fillText(`Figures count: ${count}`, window.innerWidth - 100, 100, 100, 100);
+  }
+
   clashWithEarth({ col, row }) {
     return col >= this._earthCoords.xStart && col < this._earthCoords.xEnd && row >= this._earthCoords.yStart && row < this._earthCoords.yEnd;
   }
