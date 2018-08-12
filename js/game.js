@@ -20,6 +20,8 @@ export default class Game {
     this._horizontalMiddle = Math.round(this._squaresQtyHorizontal / 2);
     this._verticalMiddle = Math.round(this._squaresQtyVertical / 2);
 
+    this.figuresCount = 0;
+
     this.screen = new GameScreen({
       squaresQtyHorizontal: this._squaresQtyHorizontal,
       squaresQtyVertical: this._squaresQtyVertical,
@@ -34,6 +36,7 @@ export default class Game {
     };
 
     this.screen.drowEarth(this._earthCoordinates, EARTH_SIZE);
+    this.screen.drowTitle(this._earthCoordinates);
 
     document.addEventListener('keydown', event => {
       switch (event.keyCode) {

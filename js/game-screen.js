@@ -108,6 +108,17 @@ export default class GameScreen {
     };
   }
 
+  drowTitle(earthCoords) {
+    this._context.font = "60px Comic Sans MS";
+    this._context.fillStyle = "orange";
+    this._context.textAlign = "center";
+    this._context.fillText("Round tetris", earthCoords.xStart * this._squareSize + 100, 100, 260, 260);
+
+    setTimeout(() => {
+      this._context.clearRect(earthCoords.xStart * this._squareSize - 100, 0, 360, 360);
+    }, 2000);
+  }
+
   clashWithEarth({ col, row }) {
     return col >= this._earthCoords.xStart && col < this._earthCoords.xEnd && row >= this._earthCoords.yStart && row < this._earthCoords.yEnd;
   }
