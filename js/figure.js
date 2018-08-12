@@ -13,6 +13,23 @@ export default class Figure {
     this._shape = utils.getRandomElem(SHAPE);
 
     this._timerId = setInterval(() => {});
+
+    let seconds = 0;
+    this._moveToEarthInverval = setInterval(() => {
+      let speed = 1;
+      if (seconds === 5) {
+        speed = 2;
+      } else if (seconds === 7) {
+        speed = 3;
+      } else if (seconds === 10) {
+        speed = 4;
+      } else if (seconds > 10) {
+        speed =  Math.floor(seconds / 2);
+      }
+
+      this.moveToEarth(speed);
+      seconds += 1;
+    }, 1000);
   }
 
   onReachCenter() {}
@@ -108,12 +125,41 @@ export default class Figure {
     });
 
     const result = this._checkNewCoordinates(this._coordinates, newCoordinates);
-    if (!result.figureInsideScreen) return;
+    if (!result.figureInsideScreen) return true;
     if (result.clash) {
+      clearInterval(this._moveToEarthInverval);
       this.onReachCenter();
       return;
     }
     this._updateFigure(newCoordinates);
+    return true;    
+  }
+
+  moveToEarth(speed) {
+
+    function calculate() {
+      const { x, y } = this._screen._earthCenter;
+
+      const xDiff = x - this._coordinates[0].x;
+      const yDiff = y - this._coordinates[0].y;
+
+      let direction;
+
+      if (Math.abs(xDiff) > Math.abs(yDiff)) {
+        direction = xDiff > 0 ? 'right' : 'left';
+      } else {
+        direction = yDiff > 0 ? 'bottom' : 'top';
+      }
+
+      return direction;
+    }
+
+    let canContinue = true;
+
+    for (let index = 0; index < speed; index++) {
+      if (!canContinue) return;
+      canContinue = this.move(calculate.call(this));
+    }
   }
 
   rotate() {
@@ -126,7 +172,10 @@ export default class Figure {
     }));
 
     const result = this._checkNewCoordinates(this._coordinates, newCoordinates);
-    if (!result.figureInsideScreen || result.clash) return;
+    if (!result.figureInsideScreen || result.clash) {
+      clearInterval(this._moveToEarthInverval);
+      return;
+    };
 
     this._currentVariant = newVariant;
     this._updateFigure(newCoordinates);

@@ -40,6 +40,13 @@ export default class GameScreen {
 
   drowEarth(earthCoords, earthSize) {
     this._earthCoords = earthCoords;
+    
+    const { xEnd, xStart, yEnd, yStart} = earthCoords;
+    this._earthCenter = {
+      x: (xEnd + xStart) / 2,
+      y: (yEnd + yStart) / 2,
+    }
+
     this._earth = new Image();
     this._earth.width = this._earthSize * this._squareSize;
     this._earth.height = this._earthSize * this._squareSize;
