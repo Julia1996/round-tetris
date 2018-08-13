@@ -39,7 +39,7 @@ export default class GameScreen {
     }
     
     const spaceItems = [];
-
+    // TODO: возможно переместить это в Game
     spaceItems.push(new SpaceItem(this._context2, { width: this.width, height: this.height }));
     
     setInterval(() => {
@@ -54,7 +54,7 @@ export default class GameScreen {
 
       });
       
-    }, getRandom(3000, 5000));
+    }, getRandom(4500, 6000));
   }
 
   fillSquare({ col, row }) {
