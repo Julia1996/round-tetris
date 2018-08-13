@@ -74,7 +74,7 @@ export default class Game {
 
     this.figuresCount += 1;
     this.screen.figuresCount(this.figuresCount);
-    
+
     this.figure.createCoordinates();
     this.figure.appendToGame();
     this.figure.onReachCenter = () => {
@@ -96,7 +96,7 @@ export default class Game {
         };
         cleared = this._clearRowIfFilled(points);
         if (cleared) {
-          this._fallToEmptyRow(points, quantityOfRows);
+          setTimeout(() => this._fallToEmptyRow(points, quantityOfRows), 1000);
         }
       } while (cleared);
     }
@@ -129,12 +129,38 @@ export default class Game {
   _fallToEmptyRow(points, quantityOfRows) {
     for (let r = 0; r < quantityOfRows; r++) {
       for (let i = points.xStart; i < points.xEnd; i++) {
+        // top falls
         // copy row above
         if (this.screen.isSquareEngaged({col: i, row: points.yStart - (r + 1)})) {
           this.screen.fillSquare({col: i, row: points.yStart - r});
         }
         // clean that row
         this.screen.cleanSquare({col: i, row: points.yStart - (r + 1)});
+
+        // bottom falls
+        // copy row above
+        if (this.screen.isSquareEngaged({col: i, row: points.yEnd - 1 + (r + 1)})) {
+          this.screen.fillSquare({col: i, row: points.yEnd - 1 + r});
+        }
+        // clean that row
+        this.screen.cleanSquare({col: i, row: points.yEnd - 1 + (r + 1)});
+      }
+
+      for (let j = points.yStart + 1; j < points.yEnd - 1; j++) {
+        // left falls
+        // copy row above
+        if (this.screen.isSquareEngaged({ col: points.xStart - (r + 1), row: j })) {
+          this.screen.fillSquare({ col: points.xStart - r, row: j });
+        }
+        // clean that row
+        this.screen.cleanSquare({ col: points.xStart - (r + 1), row: j });
+
+        // rigth falls
+        if (this.screen.isSquareEngaged({ col: points.xEnd - 1 + (r + 1), row: j })) {
+          this.screen.fillSquare({ col: points.xEnd - 1 + r, row: j })
+        }
+        // copy row above
+        this.screen.cleanSquare({ col: points.xEnd - 1 + (r + 1), row: j });
       }
     }
   }
