@@ -10,11 +10,18 @@ const SQUARE_SIZE = 20,
   EARTH_SIZE = 8;
 
 export default class Game {
-  constructor() {
+  constructor(options) {
     const clientWidth = document.documentElement.clientWidth;
     const clientHeight = document.documentElement.clientHeight;
+    this.app = document.getElementById('app');
 
-    this._squaresQtyHorizontal = Math.floor(clientWidth / SQUARE_SIZE);
+    if (options.single) {
+      this._squaresQtyHorizontal = Math.floor(clientWidth / SQUARE_SIZE);
+      this.app.classList.add('single');
+    } else {
+      this._squaresQtyHorizontal = Math.floor(clientWidth / 2 / SQUARE_SIZE);
+      this.app.classList.add('multiple');
+    }
     this._squaresQtyVertical = Math.floor(clientHeight / SQUARE_SIZE);
 
     this._horizontalMiddle = Math.round(this._squaresQtyHorizontal / 2);
@@ -22,6 +29,8 @@ export default class Game {
 
     this.figuresCount = 0;
 
+    console.log(this._squaresQtyHorizontal);
+    console.log(this._squaresQtyVertical);
     this.screen = new GameScreen({
       squaresQtyHorizontal: this._squaresQtyHorizontal,
       squaresQtyVertical: this._squaresQtyVertical,

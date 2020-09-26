@@ -1,9 +1,27 @@
 body {
   background: url("../img/space.jpg");
+  font-family: 'Roboto', Arial, sans-serif;
   background-size: cover;
+  color: #0d1a3a;
   padding: 0;
   margin: 0;
   height: 100vh;
+  font-size: 20px;
+}
+
+h1 {
+  font-size: 55px;
+}
+
+button {
+  background: rgba(255,255,255,0.5);
+  border: 2px solid white;
+  font-size: 20px;
+  font-family: 'Roboto', Arial, sans-serif;
+  padding: 13px 40px;
+  cursor: pointer;
+  color: #0d1a3a;
+  font-weight: bold;
 }
 
 canvas {
@@ -12,4 +30,17 @@ canvas {
   top: 0;
   right: 0;
   bottom: 0;
+}
+
+.welcome-screen {
+  text-align: center;
+  font-weight: bold;
+  padding: 1px;
+}
+
+.welcome-screen__inner {
+  background: rgba(255, 255, 255, 0.5);
+  width: 1000px;
+  margin: 100px auto;
+  padding: 13px 13px 50px;
 }

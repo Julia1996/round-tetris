@@ -1,5 +1,6 @@
 import 'babel-polyfill';
 import 'whatwg-fetch';
-import Game from './game';
+import {StartScreen} from './start-screen';
 
-const game = new Game();
+const startScreen = new StartScreen();
+startScreen.render();

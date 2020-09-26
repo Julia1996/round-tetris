@@ -24,8 +24,10 @@ export default class GameScreen {
     this._canvas.style.zIndex = 1;
     this._canvas2.style.zIndex = 2;
 
-    document.body.appendChild(this._canvas);
-    document.body.appendChild(this._canvas2);
+    const app = document.getElementById('app');
+
+    app.appendChild(this._canvas);
+    app.appendChild(this._canvas2);
 
     this._square = new Image();
     this._square.width = this._squareSize;
@@ -87,13 +89,7 @@ export default class GameScreen {
     this._earth = new Image();
     this._earth.width = this._earthSize * this._squareSize;
     this._earth.height = this._earthSize * this._squareSize;
-    this._earth.src = getRandomElem([
-      '../img/earth.png',
-      'http://www.pngpix.com/wp-content/uploads/2016/10/PNGPIX-COM-Globe-Burning-PNG-Transparent-Image.png',
-      'https://png.icons8.com/color/1600/pluto-dwarf-planet.png',
-      'https://png.icons8.com/color/1600/saturn-planet.png',
-      'http://www.pngmart.com/files/4/Black-Hole-PNG-Photos.png'
-    ]);
+    this._earth.src = '../img/earth.png';
     
     this._earth.onload = () => {
       // this._context.beginPath();

@@ -42,6 +42,13 @@ gulp.task('style', function () {
     .pipe(gulp.dest('build/css'));
 });
 
+gulp.task('copy-html', function () {
+  return gulp.src('*.{html,ico}')
+    .pipe(gulp.dest('build'))
+    .pipe(server.stream());
+});
+
+
 gulp.task('scripts', function () {
   return gulp.src('js/main.js')
     .pipe(plumber())
@@ -76,40 +83,37 @@ gulp.task('test', function () {
     }));
 });
 
-gulp.task('imagemin', ['copy'], function () {
+gulp.task('copy', gulp.series('copy-html', 'scripts', 'style', function () {
+  return gulp.src([
+    'fonts/**/*.{woff,woff2}',
+    'img/*.*'
+  ], {base: '.'})
+    .pipe(gulp.dest('build'));
+}));
+
+gulp.task('clean', function () {
+  return del('build');
+});
+
+gulp.task('assemble', gulp.series('clean', 'copy', 'style'));
+
+gulp.task('imagemin', gulp.series('copy', function () {
   return gulp.src('build/img/**/*.{jpg,png,gif}')
     .pipe(imagemin([
       imagemin.optipng({optimizationLevel: 3}),
       imagemin.jpegtran({progressive: true})
     ]))
     .pipe(gulp.dest('build/img'));
-});
+}));
 
 
-gulp.task('copy-html', function () {
-  return gulp.src('*.{html,ico}')
-    .pipe(gulp.dest('build'))
-    .pipe(server.stream());
-});
 
-gulp.task('copy', ['copy-html', 'scripts', 'style'], function () {
-  return gulp.src([
-    'fonts/**/*.{woff,woff2}',
-    'img/*.*'
-  ], {base: '.'})
-    .pipe(gulp.dest('build'));
-});
-
-gulp.task('clean', function () {
-  return del('build');
-});
-
-gulp.task('js-watch', ['scripts'], function (done) {
+gulp.task('js-watch', gulp.series('scripts', function (done) {
   server.reload();
   done();
-});
+}));
 
-gulp.task('serve', ['assemble'], function () {
+gulp.task('serve', gulp.series('assemble', function () {
   server.init({
     server: './build',
     notify: false,
@@ -118,19 +122,13 @@ gulp.task('serve', ['assemble'], function () {
     ui: false
   });
 
-  gulp.watch('sass/**/*.{scss,sass}', ['style']);
+  gulp.watch('sass/**/*.{scss,sass}', gulp.series('style'));
   gulp.watch('*.html').on('change', (e) => {
     if (e.type !== 'deleted') {
-      gulp.start('copy-html');
+      gulp.series('copy-html');
     }
   });
-  gulp.watch('js/**/*.js', ['js-watch']);
-});
+  gulp.watch('js/**/*.js', gulp.series('js-watch'));
+}));
 
-gulp.task('assemble', ['clean'], function () {
-  gulp.start('copy', 'style');
-});
-
-gulp.task('build', ['assemble'], function () {
-  gulp.start('imagemin');
-});
+gulp.task('build', gulp.series('assemble', 'imagemin'));
