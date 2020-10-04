@@ -26,7 +26,7 @@ export class StartScreen {
         document.querySelector('#battle').addEventListener('click', () => {
             document.getElementById('app').innerHTML = '';
             new Game({single: false});
-            const mockData = { squaresQtyHorizontal: 30, squaresQtyVertical: 40 };
+            const mockData = { squaresQtyHorizontal: 30, squaresQtyVertical: 50 };
             new CompetitorScreen(mockData);
         });
     }

@@ -41,6 +41,17 @@ canvas {
 .welcome-screen__inner {
   background: rgba(255, 255, 255, 0.5);
   width: 1000px;
-  margin: 100px auto;
+  margin: 100px auto 10px;
   padding: 13px 13px 50px;
+}
+
+.multiple {
+  display: flex;
+
+  .main-screen,
+  .competitor-screen {
+    position: relative;
+    width: 50%;
+    height: 100vh;
+  }
 }

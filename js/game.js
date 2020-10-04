@@ -18,9 +18,13 @@ export default class Game {
     if (options.single) {
       this._squaresQtyHorizontal = Math.floor(clientWidth / SQUARE_SIZE);
       this.app.classList.add('single');
+      this.screenContainer = this.app;
     } else {
       this._squaresQtyHorizontal = Math.floor(clientWidth / 2 / SQUARE_SIZE);
       this.app.classList.add('multiple');
+      this.screenContainer = document.createElement('div');
+      this.screenContainer.classList.add('main-screen');
+      this.app.appendChild(this.screenContainer);
     }
     this._squaresQtyVertical = Math.floor(clientHeight / SQUARE_SIZE);
 
@@ -35,6 +39,7 @@ export default class Game {
       squaresQtyHorizontal: this._squaresQtyHorizontal,
       squaresQtyVertical: this._squaresQtyVertical,
       squareSize: SQUARE_SIZE,
+      container: this.screenContainer
     });
 
     this._earthCoordinates = {

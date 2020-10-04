@@ -3,7 +3,7 @@ import { getRandom, getRandomElem } from './utils';
 
 
 export default class GameScreen {
-  constructor({ squaresQtyHorizontal, squaresQtyVertical, squareSize }) {
+  constructor({ squaresQtyHorizontal, squaresQtyVertical, squareSize, container }) {
     this._canvas = document.createElement('canvas');
     this._canvas2 = document.createElement('canvas');
 
@@ -24,10 +24,8 @@ export default class GameScreen {
     this._canvas.style.zIndex = 1;
     this._canvas2.style.zIndex = 2;
 
-    const app = document.getElementById('app');
-
-    app.appendChild(this._canvas);
-    app.appendChild(this._canvas2);
+    container.appendChild(this._canvas);
+    container.appendChild(this._canvas2);
 
     this._square = new Image();
     this._square.width = this._squareSize;

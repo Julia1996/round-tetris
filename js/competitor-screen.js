@@ -19,19 +19,24 @@ export default class CompetitorScreen {
         if (competitorRatio < mainRatio) {
             // ужимаем по вертикали
             console.log('ужимаем по вертикали');
-            this.squareSize = this.competitorSquaresQtyY * SQUARE_SIZE / this.mainSquaresQtyY;
-            console.log(this.competitorSquaresQtyY, SQUARE_SIZE, this.mainSquaresQtyY, this.squareSize);
+            this.squareSize = this.mainSquaresQtyY * SQUARE_SIZE / this.competitorSquaresQtyY;
+            console.log(this.squareSize);
         } else {
             // ужимаем по горизонтали
             console.log('ужимаем по горизонтали');
-            this.squareSize = this.competitorSquaresQtyX * SQUARE_SIZE / this.mainSquaresQtyX;
+            this.squareSize = this.mainSquaresQtyX * SQUARE_SIZE / this.competitorSquaresQtyX;
         }
+
+        this.screenContainer = document.createElement('div');
+        this.screenContainer.classList.add('competitor-screen');
+        document.getElementById('app').appendChild(this.screenContainer);
 
         // append canvas with corresponding styles 
         new GameScreen({ 
-            squaresQtyHorizontal: this.competitorSquaresQtyY,
-            squaresQtyVertical: this.competitorSquaresQtyX,
-            squareSize: this.squareSize
+            squaresQtyHorizontal: this.competitorSquaresQtyX,
+            squaresQtyVertical: this.competitorSquaresQtyY,
+            squareSize: this.squareSize,
+            container: this.screenContainer
         });
     }
 }
