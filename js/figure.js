@@ -163,7 +163,6 @@ export default class Figure {
   }
 
   rotate() {
-    console.log(this._coordinatesVariants);
     let newVariant = this._currentVariant + 1;
     if (newVariant >= 4) newVariant = 0;
 
