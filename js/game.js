@@ -1,13 +1,6 @@
 import GameScreen from './game-screen';
 import Figure from './figure';
-
-const SQUARE_SIZE = 20,
-  LEFT_KEY_CODE = 37,
-  TOP_KEY_CODE = 38,
-  RIGTH_KEY_CODE = 39,
-  BOTTOM_KEY_CODE = 40,
-  SPACE_KEY_CODE = 32,
-  EARTH_SIZE = 8;
+import config from './config';
 
 export default class Game {
   constructor(options) {
@@ -16,57 +9,55 @@ export default class Game {
     this.app = document.getElementById('app');
 
     if (options.single) {
-      this._squaresQtyHorizontal = Math.floor(clientWidth / SQUARE_SIZE);
+      this._squaresQtyHorizontal = Math.floor(clientWidth / config.SQUARE_SIZE);
       this.app.classList.add('single');
       this.screenContainer = this.app;
     } else {
-      this._squaresQtyHorizontal = Math.floor(clientWidth / 2 / SQUARE_SIZE);
+      this._squaresQtyHorizontal = Math.floor(clientWidth / 2 / config.SQUARE_SIZE);
       this.app.classList.add('multiple');
       this.screenContainer = document.createElement('div');
       this.screenContainer.classList.add('main-screen');
       this.app.appendChild(this.screenContainer);
     }
-    this._squaresQtyVertical = Math.floor(clientHeight / SQUARE_SIZE);
+    this._squaresQtyVertical = Math.floor(clientHeight / config.SQUARE_SIZE);
 
     this._horizontalMiddle = Math.round(this._squaresQtyHorizontal / 2);
     this._verticalMiddle = Math.round(this._squaresQtyVertical / 2);
 
     this.figuresCount = 0;
 
-    console.log(this._squaresQtyHorizontal);
-    console.log(this._squaresQtyVertical);
     this.screen = new GameScreen({
       squaresQtyHorizontal: this._squaresQtyHorizontal,
       squaresQtyVertical: this._squaresQtyVertical,
-      squareSize: SQUARE_SIZE,
+      squareSize: config.SQUARE_SIZE,
       container: this.screenContainer
     });
 
     this._earthCoordinates = {
-      xStart: this._horizontalMiddle - EARTH_SIZE / 2,
-      yStart: this._verticalMiddle - EARTH_SIZE / 2,
-      xEnd: this._horizontalMiddle + EARTH_SIZE / 2,
-      yEnd: this._verticalMiddle + EARTH_SIZE / 2
+      xStart: this._horizontalMiddle - config.EARTH_SIZE / 2,
+      yStart: this._verticalMiddle - config.EARTH_SIZE / 2,
+      xEnd: this._horizontalMiddle + config.EARTH_SIZE / 2,
+      yEnd: this._verticalMiddle + config.EARTH_SIZE / 2
     };
 
-    this.screen.drowEarth(this._earthCoordinates, EARTH_SIZE);
+    this.screen.drowEarth(this._earthCoordinates, config.EARTH_SIZE);
     this.screen.drowTitle(this._earthCoordinates);
 
     document.addEventListener('keydown', event => {
       switch (event.keyCode) {
-        case LEFT_KEY_CODE:
+        case config.LEFT_KEY_CODE:
           this.figure.move('left');
           break;
-        case TOP_KEY_CODE:
+        case config.TOP_KEY_CODE:
           this.figure.move('top');
           break;
-        case RIGTH_KEY_CODE:
+        case config.RIGTH_KEY_CODE:
           this.figure.move('right');
           break;
-        case BOTTOM_KEY_CODE:
+        case config.BOTTOM_KEY_CODE:
           this.figure.move('bottom');
           break;
-        case SPACE_KEY_CODE:
+        case config.SPACE_KEY_CODE:
           this.figure.rotate();
           break;
       }
