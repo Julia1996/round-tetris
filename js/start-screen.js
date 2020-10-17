@@ -1,5 +1,6 @@
 import Game from './game';
-import CompetitorScreen from './competitor-screen';
+import Battle from './battle';
+import Calculator from './calculator';
 
 export class StartScreen {
     render() {
@@ -20,14 +21,17 @@ export class StartScreen {
 
     bind() {
         document.querySelector('#single').addEventListener('click', () => {
+            // TODO: memory leak
             document.getElementById('app').innerHTML = '';
-            new Game({single: true});
+            const calculator = new Calculator({single: true});
+            new Game({
+                single: true,
+                squaresQtyVertical: calculator.squaresQtyVertical,
+                squaresQtyHorizontal: calculator.squaresQtyHorizontal,
+            });
         });
         document.querySelector('#battle').addEventListener('click', () => {
-            document.getElementById('app').innerHTML = '';
-            new Game({single: false});
-            const mockData = { squaresQtyHorizontal: 30, squaresQtyVertical: 50 };
-            new CompetitorScreen(mockData);
+            new Battle(this);
         });
     }
 }

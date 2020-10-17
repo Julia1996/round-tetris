@@ -15,6 +15,7 @@ export default class Figure {
     this._timerId = setInterval(() => {});
 
     let seconds = 0;
+
     this._moveToEarthInverval = setInterval(() => {
       let speed = 1;
       if (seconds === 5) {
@@ -24,7 +25,7 @@ export default class Figure {
       } else if (seconds === 10) {
         speed = 4;
       } else if (seconds > 10) {
-        speed =  Math.floor(seconds / 2);
+        speed = Math.floor(seconds / 2);
       }
 
       this.moveToEarth(speed);

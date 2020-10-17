@@ -2,7 +2,7 @@ import GameScreen from './game-screen';
 import config from './config';
 
 export default class CompetitorScreen {
-    constructor(options) {
+    constructor(options, socket) {
         this.app = document.getElementById('app');
 
         this.competitorSquaresQtyX = options.squaresQtyHorizontal;
@@ -49,5 +49,21 @@ export default class CompetitorScreen {
           };
       
         this.screen.drowEarth(this._earthCoordinates, config.EARTH_SIZE);
+        this.screen.drowNickname(options.nickname);
+
+        socket.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            if (data.figuresCount) {
+                this.screen.figuresCount(data.figuresCount)
+            } else if (data.points){
+                data.points.forEach(point => {
+                    if (point.engaged) {
+                        this.screen.fillSquare({col: point.col, row: point.row});
+                    } else {
+                        this.screen.cleanSquare({col: point.col, row: point.row});
+                    }
+                });
+            }
+        };
     }
 }

@@ -1,8 +1,10 @@
+$primary-color: #0d1a3a;
+
 body {
   background: url("../img/space.jpg");
   font-family: 'Roboto', Arial, sans-serif;
   background-size: cover;
-  color: #0d1a3a;
+  color: $primary-color;
   padding: 0;
   margin: 0;
   height: 100vh;
@@ -20,8 +22,17 @@ button {
   font-family: 'Roboto', Arial, sans-serif;
   padding: 13px 40px;
   cursor: pointer;
-  color: #0d1a3a;
+  color: $primary-color;
   font-weight: bold;
+}
+
+input {
+  border: 2px solid $primary-color;
+  font-size: 20px;
+  font-family: 'Roboto', Arial, sans-serif;
+  color: $primary-color;
+  font-weight: bold;
+  padding: 13px;
 }
 
 canvas {
@@ -45,6 +56,10 @@ canvas {
   padding: 13px 13px 50px;
 }
 
+.welcome-screen__back {
+  text-align: left;
+}
+
 .multiple {
   display: flex;
 
@@ -58,4 +73,8 @@ canvas {
   .competitor-screen canvas {
     margin: auto;
   }
+}
+
+.link {
+  color: $primary-color;
 }

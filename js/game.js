@@ -4,22 +4,21 @@ import config from './config';
 
 export default class Game {
   constructor(options) {
-    const clientWidth = document.documentElement.clientWidth;
-    const clientHeight = document.documentElement.clientHeight;
     this.app = document.getElementById('app');
+    this._socket = options.socket;
+
+    this._squaresQtyVertical = options.squaresQtyVertical;
+    this._squaresQtyHorizontal = options.squaresQtyHorizontal;
 
     if (options.single) {
-      this._squaresQtyHorizontal = Math.floor(clientWidth / config.SQUARE_SIZE);
       this.app.classList.add('single');
       this.screenContainer = this.app;
     } else {
-      this._squaresQtyHorizontal = Math.floor(clientWidth / 2 / config.SQUARE_SIZE);
       this.app.classList.add('multiple');
       this.screenContainer = document.createElement('div');
       this.screenContainer.classList.add('main-screen');
       this.app.appendChild(this.screenContainer);
     }
-    this._squaresQtyVertical = Math.floor(clientHeight / config.SQUARE_SIZE);
 
     this._horizontalMiddle = Math.round(this._squaresQtyHorizontal / 2);
     this._verticalMiddle = Math.round(this._squaresQtyVertical / 2);
@@ -30,7 +29,8 @@ export default class Game {
       squaresQtyHorizontal: this._squaresQtyHorizontal,
       squaresQtyVertical: this._squaresQtyVertical,
       squareSize: config.SQUARE_SIZE,
-      container: this.screenContainer
+      container: this.screenContainer,
+      socket: this._socket,
     });
 
     this._earthCoordinates = {
@@ -41,7 +41,9 @@ export default class Game {
     };
 
     this.screen.drowEarth(this._earthCoordinates, config.EARTH_SIZE);
-    this.screen.drowTitle(this._earthCoordinates);
+    if (options.nickname) {
+      this.screen.drowNickname(options.nickname);
+    }
 
     document.addEventListener('keydown', event => {
       switch (event.keyCode) {
@@ -78,6 +80,9 @@ export default class Game {
     });
 
     this.figuresCount += 1;
+    if (this._socket) {
+      this._socket.send(JSON.stringify({figuresCount: this.figuresCount}));
+    }
     this.screen.figuresCount(this.figuresCount);
 
     this.figure.createCoordinates();
@@ -161,10 +166,11 @@ export default class Game {
         this.screen.cleanSquare({ col: points.xStart - (r + 1), row: j });
 
         // rigth falls
+        // copy row above
         if (this.screen.isSquareEngaged({ col: points.xEnd - 1 + (r + 1), row: j })) {
           this.screen.fillSquare({ col: points.xEnd - 1 + r, row: j })
         }
-        // copy row above
+        // clean that row
         this.screen.cleanSquare({ col: points.xEnd - 1 + (r + 1), row: j });
       }
     }

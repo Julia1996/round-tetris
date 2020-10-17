@@ -1,11 +1,13 @@
 import SpaceItem from './space-item';
 import { getRandom, getRandomElem } from './utils';
+import config from './config';
 
 
 export default class GameScreen {
-  constructor({ squaresQtyHorizontal, squaresQtyVertical, squareSize, container }) {
+  constructor({ squaresQtyHorizontal, squaresQtyVertical, squareSize, container, socket }) {
     this._canvas = document.createElement('canvas');
     this._canvas2 = document.createElement('canvas');
+    this._socket = socket;
 
     this._squareSize = squareSize;
 
@@ -62,14 +64,23 @@ export default class GameScreen {
       setTimeout(() => this.fillSquare({ col, row }), 100);
       return;
     }
-    this._context.drawImage(this._square, col * this._squareSize, row * this._squareSize);
-    this._cellsEngaged[col][row] = true;
+    if (this._cellsEngaged[col]) { // such column can not exist if a new figure is started to appear from the right
+      this._context.drawImage(this._square, col * this._squareSize, row * this._squareSize);
+      this._cellsEngaged[col][row] = true;
+      if (this._socket) {
+        this._socket.send(JSON.stringify({points: [{col, row, engaged: true}]}));
+      }
+    }
   }
 
   cleanSquare({ col, row }) {
-    console.log('clean');
-    this._context.clearRect(col * this._squareSize, row * this._squareSize, this._squareSize, this._squareSize);
-    this._cellsEngaged[col][row] = false;
+    if (this._cellsEngaged[col]) { // such column can not exist if a new figure is started to appear from the right
+      this._context.clearRect(col * this._squareSize, row * this._squareSize, this._squareSize, this._squareSize);
+      this._cellsEngaged[col][row] = false;
+      if (this._socket) {
+        this._socket.send(JSON.stringify({points: [{row, col, engaged: false}]}));
+      }
+    }
   }
 
   isSquareEngaged({ col, row }) {
@@ -91,28 +102,23 @@ export default class GameScreen {
     this._earth.src = '../img/earth.png';
     
     this._earth.onload = () => {
-      this._context.drawImage(this._earth, earthCoords.xStart * this._squareSize, earthCoords.yStart * this._squareSize, 160, 160);   
+      const earthSizePx = this._squareSize * config.EARTH_SIZE;
+      this._context.drawImage(this._earth, xStart * this._squareSize, yStart * this._squareSize, earthSizePx, earthSizePx);   
     };
   }
 
-  drowTitle(earthCoords) {
-    this._context.font = "60px Comic Sans MS";
+  drowNickname(nickname) {
+    this._context.font = "50px Comic Sans MS";
     this._context.fillStyle = "orange";
-    this._context.textAlign = "center";
-    this._context.fillText("Round tetris", earthCoords.xStart * this._squareSize + 100, 100, 260);
-
-    setTimeout(() => {
-      this._context.clearRect(earthCoords.xStart * this._squareSize - 100, 0, 500, 200);
-    }, 2000);
+    this._context.fillText(nickname, 50, 50, 260);
   }
 
   figuresCount(count) {
     this._context.font = "35px Comic Sans MS";
     this._context.fillStyle = "orange";
-    this._context.textAlign = "center";
 
-    this._context.clearRect(window.innerWidth - 200, 0, 300, 300);
-    this._context.fillText(`Figures count: ${count}`, window.innerWidth - 100, 100, 100, 100);
+    this._context.clearRect(50, 70, 110, 50);
+    this._context.fillText(`Figures count: ${count}`, 50, 100, 100, 100);
   }
 
   clashWithEarth({ col, row }) {

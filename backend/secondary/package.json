@@ -1,0 +1,19 @@
+{
+  "name": "websocket-server",
+  "version": "1.0.0",
+  "description": "Websocket server for round tetris. Contains rooms.",
+  "main": "index.js",
+  "scripts": {
+    "start": "supervisor index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "websocket",
+    "tetris"
+  ],
+  "author": "yulia.dauhun",
+  "license": "ISC",
+  "dependencies": {
+    "ws": "^7.3.1"
+  }
+}
