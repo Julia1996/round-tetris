@@ -1,55 +1,25 @@
 const http = require('http');
-const ws = require('ws');
+require('dotenv').config();
+const server = require('./server');
 
-const wss = new ws.Server({noServer: true});
-
-const rooms = {};
-
-function accept(req, res) {
-  // все входящие запросы должны использовать websockets
-  if (!req.headers.upgrade || req.headers.upgrade.toLowerCase() != 'websocket') {
-    res.end();
-    return;
-  }
-
-  // может быть заголовок Connection: keep-alive, Upgrade
-  if (!req.headers.connection.match(/\bupgrade\b/i)) {
-    res.end();
-    return;
-  }
-
-  wss.handleUpgrade(req, req.socket, Buffer.alloc(0), onConnect);
-}
-
-function onConnect(ws) {
-  let currentRoom;
-  let competitor;
-
-  ws.on('message', function (message) {
-  	const parsedMessage = JSON.parse(message);
-  	if (parsedMessage.newPlayer) {
-      // this is initiallization. add to a room
-      const roomId = parsedMessage.newPlayer.roomId;
-      if (rooms[roomId]) {
-        rooms[roomId].players.push(ws);
-        competitor = rooms[roomId].players[0];
-      } else {
-        const newRoom = { players: [ws] };
-        rooms[roomId] = newRoom;
-      }
-      currentRoom = rooms[roomId];
-    } else {
-      // send data to competitor
-	    if (!competitor) {
-	      competitor = currentRoom.players.find(player => player !== ws);
-	    }
-	    competitor.send(message);
-    }
+const srv = http.createServer(server.accept);
+srv.listen(0, () => {
+  const { port } = srv.address();
+  console.log('Server is running on port ' + port);
+  const options = {
+    host: process.env.PRIMARY_HOST,
+    path: '/new-secondary',
+    port: process.env.PRIMARY_PORT,
+    method: 'POST'
+  };
+  const req = http.request(options);
+  req.on('error', (error) => {
+    console.error(error);
   });
-}
-
-if (!module.parent) {
-  http.createServer(accept).listen(9000);
-} else {
-  exports.accept = accept;
-}
+  req.write(JSON.stringify({
+    host: process.env.HOST,
+    port: port,
+    availableRooms: process.env.MAX_ROOMS - Object.keys(server.rooms).length,
+  }));
+  req.end();
+});
